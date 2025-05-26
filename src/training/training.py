@@ -11,7 +11,7 @@ def main() -> None:
     with open("report (46).csv","r",encoding="utf-8",errors="ignore") as file:
         reader = csv.DictReader(file,delimiter=",")
         for row in reader:
-            name = row["First Name"] + row["Last Name"]
+            name = row["First Name"] + row["Last Name"] 
             
             if any(row["Curriculum Title"] == t for t, _ in training_status[name]):
                 continue
