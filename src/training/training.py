@@ -23,7 +23,11 @@ def main() -> None:
     
     for name,training in training_status.items():
         for check in training: 
-            print(f"{name} is {check[1]} voor {check[0]}")
+            if check[1] == True:
+                qualified = "qualified"
+            else:
+                qualified = "not qualified"
+            print(f"{name} is {qualified} voor {check[0]}")
 
 if __name__ == "__main__":
     main()
