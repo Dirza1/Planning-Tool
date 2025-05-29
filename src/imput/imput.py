@@ -1,26 +1,12 @@
-import csv
+from openpyxl import load_workbook
 from collections import defaultdict
 
 def main():
+    wb = load_workbook(filename = "Value Stream 02Apr2025.xlsx")
+    ws = wb.active
+    print(wb.sheetnames)
 
-    daily_tasks: defaultdict = defaultdict(list)
-    with open("imput.csv", encoding="UTF-8", errors="ignore") as file:
-        raw_reader = csv.reader(file)
-        raw_headers = next(raw_reader)
-        clean_headers = [h.strip().lstrip('\ufeff') for h in raw_headers]
-        reader = csv.DictReader(file, fieldnames=clean_headers, delimiter=",")
-        
-        for row in reader:
-            task_name = row["task"]
-            task_duration = row["duration (in hours)"]
-            task_title = row["title"]
-            task_related_quriculum = row["related quriculum"]
 
-            total_task = (task_duration, task_title, task_related_quriculum)
-            daily_tasks[task_name] = total_task
-        
-    
-    print(daily_tasks)
 
 
 
