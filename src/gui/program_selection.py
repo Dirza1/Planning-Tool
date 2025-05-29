@@ -8,25 +8,22 @@ def program_selection(possible_programs: list[str]) -> list[str]:
     selected_vars: dict = {}
     selected_programs: list = []
 
-    # Frame voor canvas en scrollbar
     container = tk.Frame(window)
     container.pack(fill="both", expand=True)
 
-    # Canvas aanmaken
+
     canvas = tk.Canvas(container)
     canvas.pack(side="left", fill="both", expand=True)
 
-    # Scrollbar aan canvas koppelen
     scrollbar = tk.Scrollbar(container, orient="vertical", command=canvas.yview)
     scrollbar.pack(side="right", fill="y")
     canvas.configure(yscrollcommand=scrollbar.set)
 
-    # Frame in canvas, hier komen de checkboxes in
+
     checkbox_frame = tk.Frame(canvas)
     canvas.create_window((0, 0), window=checkbox_frame, anchor="nw")
 
     def on_frame_configure(event):
-        # Update scrollgebied op basis van de inhoud
         canvas.configure(scrollregion=canvas.bbox("all"))
 
     checkbox_frame.bind("<Configure>", on_frame_configure)

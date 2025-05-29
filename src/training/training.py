@@ -1,7 +1,7 @@
 import csv
 from collections import defaultdict
 
-def main() -> None:
+def main() -> defaultdict:
     """
     This function is to create a default dict. This dict contains the operator name as a key and then a list of tupols with training status.
     This tupol is (Curiculum name, Bool). This dictionary will be passed on to the function that will display if people are trained.
