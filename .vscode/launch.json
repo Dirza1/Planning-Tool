@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run main.main via debugpy",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "main.main",                  // ⬅️ zonder .py
+      "cwd": "${workspaceFolder}/src",        // ⬅️ src is de root van je modules
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src" // ⬅️ import root op juiste plek
+      },
+      "console": "integratedTerminal",        // ⬅️ zorgt dat je input/output ziet
+      "justMyCode": true
+    }
+  ]
+}

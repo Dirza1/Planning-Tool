@@ -1,14 +1,12 @@
 from openpyxl import load_workbook
 from collections import defaultdict
+from gui.program_selection import program_selection
 
-def main():
+def valueStream():
     wb = load_workbook(filename = "Value Stream 02Apr2025.xlsx")
-    print(wb.sheetnames)
-    for name in wb.sheetnames:
-        if name == "California (50)":
-            print (name)
-        else:
-            print ("not California mate")
+    posible_programs = wb.sheetnames
+    selected_programs:list[str] = program_selection(posible_programs)
+    print(selected_programs)
 
 
 
