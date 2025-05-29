@@ -2,7 +2,7 @@ from openpyxl import load_workbook
 from collections import defaultdict
 from gui.program_selection import program_selection
 
-def valueStream():
+def value_stream():
     wb = load_workbook(filename = "Value Stream 02Apr2025.xlsx")
     posible_programs = wb.sheetnames
     selected_programs:list[str] = program_selection(posible_programs)
@@ -13,4 +13,4 @@ def valueStream():
 
 
 if __name__ == "__main__":
-    valueStream()
+    value_stream()

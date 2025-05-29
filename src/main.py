@@ -1,7 +1,7 @@
-from imput.imput import valueStream
+from input.imput import value_stream
 
 def main()-> None:
-    valueStream()
+      value_stream()
 
 
 if __name__ == "__main__":
