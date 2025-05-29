@@ -13,4 +13,4 @@ def valueStream():
 
 
 if __name__ == "__main__":
-    main()
+    valueStream()

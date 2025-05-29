@@ -8,4 +8,4 @@ def program_selection(possible_programs:list[str]) -> list[str]:
 
 
 if __name__ == "__main__":
-    program_selection()
+    program_selection(["test"])
