@@ -3,8 +3,12 @@ from collections import defaultdict
 
 def main():
     wb = load_workbook(filename = "Value Stream 02Apr2025.xlsx")
-    ws = wb.active
     print(wb.sheetnames)
+    for name in wb.sheetnames:
+        if name == "California (50)":
+            print (name)
+        else:
+            print ("not California mate")
 
 
 
