@@ -28,6 +28,20 @@ def value_stream():
                 if cel.value == "":
                     break
                 week_planning = daily_planning_file[f"Week {column_week_number} of {column_year}"]
+                
+                for coll in week_planning.iter_cols():
+                    if col[0] != column_date:
+                        continue
+                    for cell in coll:
+                        if cell[2].value == "sv":
+                            break
+                        elif cell.row < 10:
+                            continue
+                        elif cell.value != "":
+                            continue
+                        else:
+                            pass
+
 
 
 
