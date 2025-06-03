@@ -11,25 +11,11 @@ def value_stream():
     selected_programs:list[str] = program_selection(posible_programs)
 
     for program in selected_programs:
-        program_sheet = value_stream_file[program]
-        
-        """
         batch_number:str = input(f"What is the batch number of {program}? Please put in the full batch number in xx(x).xxx(x) format. ")
-        
-        for row in program_sheet.iter_rows():
-            for cel in row:
-                if not isinstance(cel.value, str):
-                    continue
-                data:str = cel.value.strip()
-                words:list = data.split(" ")
-                new_words = [batch_number if word == "XX.XXX" else word for word in words]
-                joined: str = " ".join(new_words)
-
-                if joined != cel.value:
-                    cel.value = joined"""
+        replace_project_code(value_stream_file, program, batch_number)
         
         
-        for col in program_sheet.iter_cols():
+        """for col in program_sheet.iter_cols():
             column_date = (col[1].value)
             print(type(column_date))
             if isinstance(column_date, str):
@@ -48,16 +34,45 @@ def value_stream():
                     pass
                 if cel.value == "":
                     break
-                week_planning = daily_planning_file[f"Week {column_week_number} of {column_year}"]
+                week_planning = daily_planning_file[f"Week {column_week_number} of {column_year}"]"""
+
+
+
+
                 
+    reset_project_code(value_stream_file, program, batch_number)
+    value_stream_file.save("Value Stream 02Apr2025.xlsx")
 
 
-                
+def replace_project_code(value_stream_file, program, batch_number="XX.XXX"):
+    program_sheet = value_stream_file[program]
+        
+    for row in program_sheet.iter_rows():
+        for cel in row:
+            if not isinstance(cel.value, str):
+                continue
+            data:str = cel.value.strip()
+            words:list = data.split(" ")
+            new_words = [batch_number if word == "XX.XXX" else word for word in words]
+            joined: str = " ".join(new_words)
 
-        value_stream_file.save("Value Stream 02Apr2025.xlsx")
+            if joined != cel.value:
+                cel.value = joined
 
+def reset_project_code(value_stream_file, program, batch_number):
+    program_sheet = value_stream_file[program]
+        
+    for row in program_sheet.iter_rows():
+        for cel in row:
+            if not isinstance(cel.value, str):
+                continue
+            data:str = cel.value.strip()
+            words:list = data.split(" ")
+            new_words = ["XX.XXX" if word == batch_number else word for word in words]
+            joined: str = " ".join(new_words)
 
-
+            if joined != cel.value:
+                cel.value = joined
 
 
 if __name__ == "__main__":
