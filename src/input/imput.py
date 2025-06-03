@@ -1,21 +1,21 @@
 from openpyxl import load_workbook
 from collections import defaultdict
 from gui.program_selection import program_selection
+from datetime import datetime
+from datetime import date
 
 def value_stream():
-    wb = load_workbook(filename = "Value Stream 02Apr2025.xlsx")
-    posible_programs:list[str] = wb.sheetnames
+    value_stream_file = load_workbook(filename = "Value Stream 02Apr2025.xlsx", data_only=True)
+    posible_programs:list[str] = value_stream_file.sheetnames
     selected_programs:list[str] = program_selection(posible_programs)
 
     for program in selected_programs:
-        ws = wb[program]
-        c = ws["A2"]
+        program_sheet = value_stream_file[program]
         
-        thaw_date:str = input(f"What is the thaw date of {program}? Please use DD-Mmm-YYYY format. ")
+        """
         batch_number:str = input(f"What is the batch number of {program}? Please put in the full batch number in xx(x).xxx(x) format. ")
-        c.value = thaw_date
-
-        for row in ws.iter_rows():
+        
+        for row in program_sheet.iter_rows():
             for cel in row:
                 if not isinstance(cel.value, str):
                     continue
@@ -25,9 +25,26 @@ def value_stream():
                 joined: str = " ".join(new_words)
 
                 if joined != cel.value:
-                    cel.value = joined
+                    cel.value = joined"""
+        
+        
+        for col in program_sheet.iter_cols():
+            column_date_value:str = str(col[1].value)
+            print(type(column_date_value))
+            column_date = datetime.strptime(column_date_value.strip(),"%d-%b-%Y")
+            column_week_number:int = column_date.isocalendar()[1]
+            print(f"{column_week_number=}")
+            """for cel in col:
+                if cel.row < 2:
+                    pass
+                if cel.column < 3:
+                    pass
+                if cel.value == "":
+                    break"""
 
-        wb.save("Value Stream 02Apr2025.xlsx")
+                
+
+        value_stream_file.save("Value Stream 02Apr2025.xlsx")
 
 
 
