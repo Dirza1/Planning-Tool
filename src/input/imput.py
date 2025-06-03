@@ -15,19 +15,11 @@ def value_stream():
         program_sheet = value_stream_file[program]
         replace_batch_number(program_sheet, program, batch_number)
         
-        
-        """for col in program_sheet.iter_cols():
+
+        for col in program_sheet.iter_cols():
             column_date = (col[1].value)
-            print(type(column_date))
-            if isinstance(column_date, str):
-                print(f"{column_date} is of type String. This was in column {col[0].column_letter}")
-                continue
-            if isinstance(column_date, type(None)):
-                print("einde van de valuestream berijkt.")
-                break
             column_week_number:int = column_date.isocalendar()[1]
             column_year:int = column_date.isocalendar()[0]
-            print(f"{column_week_number=}")
             for cel in col:
                 if cel.row < 3:
                     pass
@@ -35,7 +27,7 @@ def value_stream():
                     pass
                 if cel.value == "":
                     break
-                week_planning = daily_planning_file[f"Week {column_week_number} of {column_year}"]"""
+                week_planning = daily_planning_file[f"Week {column_week_number} of {column_year}"]
 
 
 
