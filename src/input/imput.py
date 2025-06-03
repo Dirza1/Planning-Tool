@@ -6,6 +6,7 @@ from datetime import date
 
 def value_stream():
     value_stream_file = load_workbook(filename = "Value Stream 02Apr2025.xlsx", data_only=True)
+    daily_planning_file = load_workbook(filename="Daily planning.xlsx", data_only=True)
     posible_programs:list[str] = value_stream_file.sheetnames
     selected_programs:list[str] = program_selection(posible_programs)
 
@@ -38,14 +39,18 @@ def value_stream():
                 print("einde van de valuestream berijkt.")
                 break
             column_week_number:int = column_date.isocalendar()[1]
+            column_year:int = column_date.isocalendar()[0]
             print(f"{column_week_number=}")
-            """for cel in col:
-                if cel.row < 2:
+            for cel in col:
+                if cel.row < 3:
                     pass
-                if cel.column < 3:
+                if cel.column < 2:
                     pass
                 if cel.value == "":
-                    break"""
+                    break
+                week_planning = daily_planning_file[f"Week {column_week_number} of {column_year}"]
+                
+
 
                 
 
