@@ -12,7 +12,8 @@ def value_stream():
 
     for program in selected_programs:
         batch_number:str = input(f"What is the batch number of {program}? Please put in the full batch number in xx(x).xxx(x) format. ")
-        replace_batch_number(value_stream_file, program, batch_number)
+        program_sheet = value_stream_file[program]
+        replace_batch_number(program_sheet, program, batch_number)
         
         
         """for col in program_sheet.iter_cols():
@@ -40,13 +41,12 @@ def value_stream():
 
 
                 
-    reset_batch_number(value_stream_file, program, batch_number)
+    reset_batch_number(program_sheet, program, batch_number)
     value_stream_file.save("Value Stream 02Apr2025.xlsx")
 
 
-def replace_batch_number(value_stream_file, program, batch_number):
-    program_sheet = value_stream_file[program]
-        
+def replace_batch_number(program_sheet, batch_number):
+    
     for row in program_sheet.iter_rows():
         for cel in row:
             if not isinstance(cel.value, str):
@@ -59,9 +59,8 @@ def replace_batch_number(value_stream_file, program, batch_number):
             if joined != cel.value:
                 cel.value = joined
 
-def reset_batch_number(value_stream_file, program, batch_number):
-    program_sheet = value_stream_file[program]
-        
+def reset_batch_number(program_sheet, batch_number):
+
     for row in program_sheet.iter_rows():
         for cel in row:
             if not isinstance(cel.value, str):
