@@ -29,9 +29,14 @@ def value_stream():
         
         
         for col in program_sheet.iter_cols():
-            column_date_value:str = str(col[1].value)
-            print(type(column_date_value))
-            column_date = datetime.strptime(column_date_value.strip(),"%d-%b-%Y")
+            column_date = (col[1].value)
+            print(type(column_date))
+            if isinstance(column_date, str):
+                print(f"{column_date} is of type String. This was in column {col[0].column_letter}")
+                continue
+            if isinstance(column_date, type(None)):
+                print("einde van de valuestream berijkt.")
+                break
             column_week_number:int = column_date.isocalendar()[1]
             print(f"{column_week_number=}")
             """for cel in col:
