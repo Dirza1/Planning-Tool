@@ -1,57 +1,113 @@
 from openpyxl import load_workbook
-from collections import defaultdict
 from gui.program_selection import program_selection
 from datetime import datetime
 from datetime import date
+import tkinter as tk
+from tkinter import messagebox
+import sys
 
 def value_stream():
-    value_stream_file = load_workbook(filename = "Value Stream 02Apr2025.xlsx", data_only=True)
-    daily_planning_file = load_workbook(filename="Daily planning.xlsx", data_only=True)
+    root = tk.Tk()
+    root.withdraw()
+    
+    try:
+        value_stream_file = load_workbook(filename = "Value Stream 02Apr2025.xlsx", data_only=True)
+    except FileNotFoundError as e:
+        messagebox.showerror(
+            "Value stream not found",
+            f"The valuestream file could not be found.\n"
+            f"Ensure the file is named correctly and in the correct dictionary.\n"
+            f"Restart the program\n"
+            f"official error: {e}"
+        )
+        sys.exit(1)
+
+    try:
+        daily_planning_file = load_workbook(filename="Daily planning.xlsx", data_only=True)
+    except FileNotFoundError as e:
+        messagebox.showerror(
+            "Daily planning not found",
+            f"The daily planning file could not be found.\n"
+            f"Ensure the file is named correctly and in the correct dictionary.\n"
+            f"Restart the program\n"
+            f"official error: {e}"
+        )
+        sys.exit(1)
     posible_programs:list[str] = value_stream_file.sheetnames
-    selected_programs:list[str] = program_selection(posible_programs)
+    #selected_programs:list[str] = program_selection(posible_programs)
+    selected_programs = ["New York (62)"]
 
     for program in selected_programs:
         batch_number:str = input(f"What is the batch number of {program}? Please put in the full batch number in xx(x).xxx(x) format. ")
         program_sheet = value_stream_file[program]
-        replace_batch_number(program_sheet, program, batch_number)
+        replace_batch_number(program_sheet, batch_number)
         
 
-        for col in program_sheet.iter_cols():
-            column_date = (col[1].value)
+        for col in program_sheet.iter_cols(min_col=2):
+            column_date:datetime = (col[1].value)
+            if isinstance(column_date, type(None)):
+                break
+            if not isinstance(column_date, datetime):
+                messagebox.showerror(
+            "Invalid Date Format",
+            f"The date {column_date} is not formatted correctly.\n"
+            f"This error happened during the parsing of {program}.\n"
+            "Ensure the correct formatting is used in Excel and that the thaw date is set in the format 01-01-2025 and not 01-Jan-2025.\n"
+            "Restart the program."
+        )
+
+                sys.exit(1)
             column_week_number:int = column_date.isocalendar()[1]
             column_year:int = column_date.isocalendar()[0]
             for cel in col:
-                if cel.row < 3:
-                    pass
-                if cel.column < 2:
-                    pass
-                if cel.value == "":
+                if cel.row <3:
+                    continue
+                min_row = 0
+                max_row = 0
+                if not is_top_merged_cell(program_sheet, cel) and is_merged_cell(program_sheet, cel) == True:
+                    continue
+                if is_merged_cell(program_sheet, cel) == True:
+                    for merged_cell_range in program_sheet.merged_cells.ranges:
+                        if cel.coordinate in merged_cell_range:
+                            min_row, max_row = merged_cell_range.min_row, merged_cell_range.max_row
+                if cel.value == "" and is_merged_cell(program_sheet, cel) == False:
                     break
-                week_planning = daily_planning_file[f"Week {column_week_number} of {column_year}"]
                 
+                try:
+                    week_planning = daily_planning_file[f"week {column_week_number} of {column_year}"]
+                except KeyError as e:
+                    messagebox.showerror(
+                        "Invalid tab in weekly planning",
+                        f"The tab you are trying to use for the daily planning does not exist.\n"
+                        f"Please ensure to extend the weekly planning to the end date of the process\n"
+                        "Restart the program."
+                    )                    
+
+
                 for coll in week_planning.iter_cols():
-                    if col[0] != column_date:
+                    if coll[0] != column_date:
                         continue
                     for cell in coll:
                         if cell[2].value == "sv":
                             break
-                        elif cell.row < 10:
+                        elif cell.row < 11:
+                            continue
+                        elif is_merged_cell(week_planning,cell) == True:
                             continue
                         elif cell.value != "":
                             continue
                         else:
-                            pass
+                            cell.value = cel.value
+                            week_planning.merge_cells(start_row=cell.row, end_row=cell.row + (max_row-min_row))
 
 
 
-
-
-                
-    reset_batch_number(program_sheet, program, batch_number)
+    reset_batch_number(program_sheet, batch_number)
     value_stream_file.save("Value Stream 02Apr2025.xlsx")
+    daily_planning_file.save("Daily planning.xlsx")
 
 
-def replace_batch_number(program_sheet, batch_number):
+def replace_batch_number(program_sheet, batch_number:int) -> None:
     
     for row in program_sheet.iter_rows():
         for cel in row:
@@ -65,7 +121,7 @@ def replace_batch_number(program_sheet, batch_number):
             if joined != cel.value:
                 cel.value = joined
 
-def reset_batch_number(program_sheet, batch_number):
+def reset_batch_number(program_sheet, batch_number:int) -> None:
 
     for row in program_sheet.iter_rows():
         for cel in row:
@@ -79,6 +135,17 @@ def reset_batch_number(program_sheet, batch_number):
             if joined != cel.value:
                 cel.value = joined
 
+def is_merged_cell(program_sheet, cel) -> bool:
+    for merged_cell_range in program_sheet.merged_cells.ranges:
+        if cel.coordinate in merged_cell_range:
+            return True
+        return False
+
+def is_top_merged_cell(program_sheet, cel) -> bool:
+    for merged_cell_range in program_sheet.merged_cells.ranges:
+        if cel.coordinate == merged_cell_range.coord.split(':')[0]:
+            return True
+    return False
 
 if __name__ == "__main__":
     value_stream()
