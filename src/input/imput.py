@@ -33,11 +33,11 @@ def value_stream():
             f"official error: {e}"
         )
         sys.exit(1)
-    posible_programs:list[str] = value_stream_file.sheetnames
-    selected_programs:list[str] = program_selection(posible_programs)
-    print(selected_programs)
+    #posible_programs:list[str] = value_stream_file.sheetnames
+    #selected_programs:list[str] = program_selection(posible_programs)
+    selected_programs = ["New York (62)"]
 
-    """for program in selected_programs:
+    for program in selected_programs:
         batch_number:str = input(f"What is the batch number of {program}? Please put in the full batch number in xx(x).xxx(x) format. ")
         program_sheet = value_stream_file[program]
         replace_batch_number(program_sheet, batch_number)
@@ -104,7 +104,7 @@ def value_stream():
                                                         start_column=cell.column,
                                                         end_column=cell.column)
                             
-                            break"""
+                            break
 
 
 
