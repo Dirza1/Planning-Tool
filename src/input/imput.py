@@ -34,10 +34,10 @@ def value_stream():
         )
         sys.exit(1)
     posible_programs:list[str] = value_stream_file.sheetnames
-    #selected_programs:list[str] = program_selection(posible_programs)
-    selected_programs = ["New York (62)"]
+    selected_programs:list[str] = program_selection(posible_programs)
+    print(selected_programs)
 
-    for program in selected_programs:
+    """for program in selected_programs:
         batch_number:str = input(f"What is the batch number of {program}? Please put in the full batch number in xx(x).xxx(x) format. ")
         program_sheet = value_stream_file[program]
         replace_batch_number(program_sheet, batch_number)
@@ -87,8 +87,6 @@ def value_stream():
                 for coll in week_planning.iter_cols():
                     if coll[0].value != column_date:
                         continue
-                    if coll[3].value == "SV":
-                        continue
                     for cell in coll:
                         if cell.row < 11:
                             continue
@@ -99,11 +97,14 @@ def value_stream():
                         else:
                             cell.value = cel.value
                             cell.fill = copy(cel.fill)
+                            cell.alignment = copy(cel.alignment)
+                            cell.border = copy(cel.border)
                             week_planning.merge_cells(start_row=cell.row, 
                                                         end_row=cell.row + (max_row-min_row),
                                                         start_column=cell.column,
                                                         end_column=cell.column)
-                            break
+                            
+                            break"""
 
 
 
