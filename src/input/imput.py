@@ -1,10 +1,10 @@
 from openpyxl import load_workbook
 from gui.program_selection import program_selection
 from datetime import datetime
-from datetime import date
 import tkinter as tk
 from tkinter import messagebox
 import sys
+from copy import copy
 
 def value_stream():
     root = tk.Tk()
@@ -66,14 +66,13 @@ def value_stream():
                 max_row = 0
                 if not is_top_merged_cell(program_sheet, cel) and is_merged_cell(program_sheet, cel) == True:
                     continue
+                if cel.value == None and is_merged_cell(program_sheet, cel) == False:
+                    break
                 if is_merged_cell(program_sheet, cel) == True:
                     for merged_cell_range in program_sheet.merged_cells.ranges:
                         if cel.coordinate in merged_cell_range:
                             min_row, max_row = merged_cell_range.min_row, merged_cell_range.max_row
-                if cel.value == None and is_merged_cell(program_sheet, cel) == False:
-                    break
                 
-                print(f"fount cell to be coppied: {cel.value}")
                 try:
                     week_planning = daily_planning_file[f"week {column_week_number} of {column_year}"]
                 except KeyError as e:
@@ -88,7 +87,7 @@ def value_stream():
                 for coll in week_planning.iter_cols():
                     if coll[0].value != column_date:
                         continue
-                    if coll[2].value == "sv":
+                    if coll[3].value == "SV":
                         continue
                     for cell in coll:
                         if cell.row < 11:
@@ -98,11 +97,13 @@ def value_stream():
                         elif cell.value != None:
                             continue
                         else:
-                            print(f"found the correct cell to coppy to. Value to be coppied: {cel.value}\n")
                             cell.value = cel.value
-                            print(f"value after copieing of the new cel: {cell.value}")
-                            if min_row != 0 and max_row != 0:
-                                week_planning.merge_cells(start_row=cell.row, end_row=cell.row + (max_row-min_row))
+                            cell.fill = copy(cel.fill)
+                            week_planning.merge_cells(start_row=cell.row, 
+                                                        end_row=cell.row + (max_row-min_row),
+                                                        start_column=cell.column,
+                                                        end_column=cell.column)
+                            break
 
 
 
@@ -143,7 +144,7 @@ def is_merged_cell(program_sheet, cel) -> bool:
     for merged_cell_range in program_sheet.merged_cells.ranges:
         if cel.coordinate in merged_cell_range:
             return True
-        return False
+    return False
 
 def is_top_merged_cell(program_sheet, cel) -> bool:
     for merged_cell_range in program_sheet.merged_cells.ranges:
