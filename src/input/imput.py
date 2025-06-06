@@ -70,9 +70,10 @@ def value_stream():
                     for merged_cell_range in program_sheet.merged_cells.ranges:
                         if cel.coordinate in merged_cell_range:
                             min_row, max_row = merged_cell_range.min_row, merged_cell_range.max_row
-                if cel.value == "" and is_merged_cell(program_sheet, cel) == False:
+                if cel.value == None and is_merged_cell(program_sheet, cel) == False:
                     break
                 
+                print(f"fount cell to be coppied: {cel.value}")
                 try:
                     week_planning = daily_planning_file[f"week {column_week_number} of {column_year}"]
                 except KeyError as e:
@@ -85,20 +86,23 @@ def value_stream():
 
 
                 for coll in week_planning.iter_cols():
-                    if coll[0] != column_date:
+                    if coll[0].value != column_date:
+                        continue
+                    if coll[2].value == "sv":
                         continue
                     for cell in coll:
-                        if cell[2].value == "sv":
-                            break
-                        elif cell.row < 11:
+                        if cell.row < 11:
                             continue
                         elif is_merged_cell(week_planning,cell) == True:
                             continue
-                        elif cell.value != "":
+                        elif cell.value != None:
                             continue
                         else:
+                            print(f"found the correct cell to coppy to. Value to be coppied: {cel.value}\n")
                             cell.value = cel.value
-                            week_planning.merge_cells(start_row=cell.row, end_row=cell.row + (max_row-min_row))
+                            print(f"value after copieing of the new cel: {cell.value}")
+                            if min_row != 0 and max_row != 0:
+                                week_planning.merge_cells(start_row=cell.row, end_row=cell.row + (max_row-min_row))
 
 
 
