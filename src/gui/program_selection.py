@@ -1,14 +1,14 @@
 import tkinter as tk
 
 def program_selection(possible_programs: list[str]) -> list[str]:
-    window = tk.Tk()
-    window.geometry("500x800")
-    window.title("What programs need to be added?")
+    root = tk.Tk()
+    root.geometry("500x800")
+    root.title("What programs need to be added?")
 
-    selected_vars: dict = {}
-    selected_programs: list = []
+    selected_vars = {}
+    selected_programs = []
 
-    container = tk.Frame(window)
+    container = tk.Frame(root)
     container.pack(fill="both", expand=True)
 
     canvas = tk.Canvas(container)
@@ -19,31 +19,30 @@ def program_selection(possible_programs: list[str]) -> list[str]:
     canvas.configure(yscrollcommand=scrollbar.set)
 
     checkbox_frame = tk.Frame(canvas)
-    canvas_window = canvas.create_window((0, 0), window=checkbox_frame, anchor="nw")
+    canvas_window = canvas.create_window((0, 0), anchor="nw", window=checkbox_frame)
 
-    def on_frame_configure(event):
+
+    def on_configure(event):
         canvas.configure(scrollregion=canvas.bbox("all"))
-        canvas.itemconfig(canvas_window, width=canvas.winfo_width())
+        canvas.itemconfig(canvas_window, width=event.width)
 
-    checkbox_frame.bind("<Configure>", on_frame_configure)
-    canvas.bind("<Configure>", lambda e: canvas.itemconfig(canvas_window, width=canvas.winfo_width()))
-
-    def confirm_selection() -> None:
-        nonlocal selected_programs
-        selected_programs = [program for program, var in selected_vars.items() if var.get()]
-        window.destroy()
+    canvas.bind("<Configure>", on_configure)
 
     for program in sorted(possible_programs):
         if program.strip() == "":
             continue
         var = tk.BooleanVar()
-        checkbox = tk.Checkbutton(checkbox_frame, text=program, variable=var)
-        checkbox.pack(anchor="w", padx=5, pady=2)
+        cb = tk.Checkbutton(checkbox_frame, text=program, variable=var)
+        cb.pack(anchor="w", padx=5, pady=2)
         selected_vars[program] = var
 
-    btn = tk.Button(window, text="Confirm selection", command=confirm_selection)
-    btn.pack(pady=10)
+    def confirm_selection():
+        nonlocal selected_programs
+        selected_programs = [p for p, var in selected_vars.items() if var.get()]
+        root.quit()
+        root.destroy()
 
-    window.mainloop()
+    tk.Button(root, text="Confirm selection", command=confirm_selection).pack(pady=10)
 
+    root.mainloop()
     return selected_programs
