@@ -1,5 +1,5 @@
 from openpyxl import load_workbook
-#from gui.program_selection import program_selection
+from gui.program_selection import program_selection
 from datetime import datetime
 import tkinter as tk
 from tkinter import messagebox
@@ -33,9 +33,8 @@ def value_stream():
             f"official error: {e}"
         )
         sys.exit(1)
-    #posible_programs:list[str] = value_stream_file.sheetnames
-    #selected_programs:list[str] = program_selection(posible_programs)
-    selected_programs = ["New York (62)"]
+    posible_programs:list[str] = value_stream_file.sheetnames
+    selected_programs:list[str] = program_selection(posible_programs)
 
     for program in selected_programs:
         batch_number:str = input(f"What is the batch number of {program}? Please put in the full batch number in xx(x).xxx(x) format. ")
@@ -60,6 +59,7 @@ def value_stream():
             column_week_number:int = column_date.isocalendar()[1]
             column_year:int = column_date.isocalendar()[0]
             for cel in col:
+                is_coppied = False
                 if cel.row <3:
                     continue
                 min_row = 0
@@ -85,6 +85,8 @@ def value_stream():
 
 
                 for coll in week_planning.iter_cols():
+                    if is_coppied == True:
+                        break
                     if coll[0].value != column_date:
                         continue
                     for cell in coll:
@@ -103,6 +105,7 @@ def value_stream():
                                                         end_row=cell.row + (max_row-min_row),
                                                         start_column=cell.column,
                                                         end_column=cell.column)
+                            is_coppied = True
                             
                             break
 
