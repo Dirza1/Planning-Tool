@@ -1,5 +1,5 @@
 from openpyxl import load_workbook
-from gui.program_selection import program_selection
+#from gui.program_selection import program_selection
 from datetime import datetime
 import tkinter as tk
 from tkinter import messagebox
