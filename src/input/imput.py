@@ -1,61 +1,53 @@
 from openpyxl import load_workbook
 from gui.program_selection import program_selection
 from datetime import datetime
-import tkinter as tk
-from tkinter import messagebox
+import easygui
 import sys
 from copy import copy
 
 def value_stream():
-    root = tk.Tk()
-    root.withdraw()
-    selected_programs:list[str] = []
-    
+   
     try:
         value_stream_file = load_workbook(filename = "Value Stream 02Apr2025.xlsx", data_only=True)
     except FileNotFoundError as e:
-        messagebox.showerror(
+        easygui.showerror(
             "Value stream not found",
             f"The valuestream file could not be found.\n"
             f"Ensure the file is named correctly and in the correct dictionary.\n"
             f"Restart the program\n"
             f"official error: {e}"
         )
-        root.destroy()
         sys.exit(1)
 
     try:
         daily_planning_file = load_workbook(filename="Daily planning.xlsx", data_only=True)
     except FileNotFoundError as e:
-        messagebox.showerror(
+        easygui.showerror(
             "Daily planning not found",
             f"The daily planning file could not be found.\n"
             f"Ensure the file is named correctly and in the correct dictionary.\n"
             f"Restart the program\n"
             f"official error: {e}"
-        )
-        root.destroy()
+            )
         sys.exit(1)
     posible_programs:list[str] = value_stream_file.sheetnames
     try:
         selected_programs:list[str] = program_selection(posible_programs)
     except Exception as e:
-        messagebox.showerror(
-        "Program selection not performed",
-        f"The program selection was unsuccessful.\n"
-        f"Restart the program\n"
-        f"official error: {e}"
-        )
-        root.destroy()
+        easygui.showerror(
+            "Program selection not performed",
+            f"The program selection was unsuccessful.\n"
+            f"Restart the program\n"
+            f"official error: {e}"
+            )
         sys.exit(1)
 
     if len(selected_programs) == 0:
-        messagebox.showerror(
+        easygui.showerror(
         "Program selection not performed",
         f"The program selection was unsuccessful.\n"
         f"Restart the program\n"
         )
-        root.destroy()
         sys.exit(1)
 
     for program in selected_programs:
@@ -68,14 +60,13 @@ def value_stream():
             if isinstance(column_date, type(None)):
                 break
             if not isinstance(column_date, datetime):
-                messagebox.showerror(
-            "Invalid Date Format",
-            f"The date {column_date} is not formatted correctly.\n"
-            f"This error happened during the parsing of {program}.\n"
-            "Ensure the correct formatting is used in Excel and that the thaw date is set in the format 01-01-2025 and not 01-Jan-2025.\n"
-            "Restart the program."
-            )
-                root.destroy()
+                easygui.showerror(
+                "Invalid Date Format",
+                f"The date {column_date} is not formatted correctly.\n"
+                f"This error happened during the parsing of {program}.\n"
+                "Ensure the correct formatting is used in Excel and that the thaw date is set in the format 01-01-2025 and not 01-Jan-2025.\n"
+                "Restart the program."
+                )
                 sys.exit(1)
             column_week_number:int = column_date.isocalendar()[1]
             column_year:int = column_date.isocalendar()[0]
@@ -97,13 +88,12 @@ def value_stream():
                 try:
                     week_planning = daily_planning_file[f"week {column_week_number} of {column_year}"]
                 except KeyError as e:
-                    messagebox.showerror(
+                    easygui.showerror(
                         "Invalid tab in weekly planning",
                         f"The tab you are trying to use for the daily planning does not exist.\n"
                         f"Please ensure to extend the weekly planning to the end date of the process\n"
                         "Restart the program."
                     )                    
-                    root.destroy()
                     sys.exit(1)
 
                 for coll in week_planning.iter_cols():
@@ -136,7 +126,6 @@ def value_stream():
     reset_batch_number(program_sheet, batch_number)
     value_stream_file.save("Value Stream 02Apr2025.xlsx")
     daily_planning_file.save("Daily planning.xlsx")
-    root.destroy()
 
 
 def replace_batch_number(program_sheet, batch_number:int) -> None:
