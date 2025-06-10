@@ -20,7 +20,7 @@ def value_stream():
         sys.exit(1)
 
     try:
-        daily_planning_file = load_workbook(filename="Daily planning.xlsx", data_only=True)
+        daily_planning_file = load_workbook(filename=r'/mnt/c/Users/jasper.olthof/Thermo Fisher Scientific/USP Planning - Week Planning/Week Planning.xlsx', data_only=True)
     except FileNotFoundError as e:
         easygui.msgbox(
             f"The daily planning file could not be found.\n"
@@ -30,7 +30,9 @@ def value_stream():
             title="Daily planning not found"
             )
         sys.exit(1)
+
     posible_programs:list[str] = value_stream_file.sheetnames
+
     try:
         selected_programs:list[str] = program_selection(posible_programs)
     except Exception as e:
@@ -86,7 +88,7 @@ def value_stream():
                             min_row, max_row = merged_cell_range.min_row, merged_cell_range.max_row
                 
                 try:
-                    week_planning = daily_planning_file[f"week {column_week_number} of {column_year}"]
+                    week_planning = daily_planning_file[f"Week {column_week_number} - {column_year}"]
                 except KeyError as e:
                     easygui.msgbox(
                         f"The tab you are trying to use for the daily planning does not exist.\n"
@@ -123,9 +125,9 @@ def value_stream():
 
 
 
-    reset_batch_number(program_sheet, batch_number)
+    #reset_batch_number(program_sheet, batch_number)
     value_stream_file.save("Value Stream 02Apr2025.xlsx")
-    daily_planning_file.save("Daily planning.xlsx")
+    daily_planning_file.save(r'/mnt/c/Users/jasper.olthof/Thermo Fisher Scientific/USP Planning - Week Planning/Week Planning.xlsx')
 
 
 def replace_batch_number(program_sheet, batch_number:int) -> None:
