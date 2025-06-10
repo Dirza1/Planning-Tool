@@ -1,14 +1,14 @@
 import tkinter as tk
 
 def program_selection(possible_programs: list[str]) -> list[str]:
-    root = tk.Tk()
-    root.geometry("500x800")
-    root.title("What programs need to be added?")
+    roots = tk.Tk()
+    roots.geometry("500x800")
+    roots.title("What programs need to be added?")
 
     selected_vars = {}
     selected_programs = []
 
-    container = tk.Frame(root)
+    container = tk.Frame(roots)
     container.pack(fill="both", expand=True)
 
     canvas = tk.Canvas(container)
@@ -20,7 +20,6 @@ def program_selection(possible_programs: list[str]) -> list[str]:
 
     checkbox_frame = tk.Frame(canvas)
     canvas_window = canvas.create_window((0, 0), anchor="nw", window=checkbox_frame)
-
 
     def on_configure(event):
         canvas.configure(scrollregion=canvas.bbox("all"))
@@ -39,10 +38,15 @@ def program_selection(possible_programs: list[str]) -> list[str]:
     def confirm_selection():
         nonlocal selected_programs
         selected_programs = [p for p, var in selected_vars.items() if var.get()]
-        root.quit()
-        root.destroy()
+        roots.quit()
+        roots.destroy()
 
-    tk.Button(root, text="Confirm selection", command=confirm_selection).pack(pady=10)
+    tk.Button(roots, text="Confirm selection", command=confirm_selection).pack(pady=10)
 
-    root.mainloop()
+    roots.mainloop()
+
     return selected_programs
+
+if __name__ == "__main__":
+    select = program_selection(["Test","Test again","Realy, another test?"])
+    print(select)
