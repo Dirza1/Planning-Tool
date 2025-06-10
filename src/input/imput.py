@@ -8,7 +8,7 @@ from copy import copy
 def value_stream():
    
     try:
-        value_stream_file = load_workbook(filename = "Value Stream 02Apr2025.xlsx", data_only=True)
+        value_stream_file = load_workbook(filename = "Value Stream MASTER.xlsx", data_only=True)
     except FileNotFoundError as e:
         easygui.msgbox(
             f"The valuestream file could not be found.\n"
@@ -125,7 +125,7 @@ def value_stream():
 
 
 
-    #reset_batch_number(program_sheet, batch_number)
+    reset_batch_number(program_sheet, batch_number)
     value_stream_file.save("Value Stream 02Apr2025.xlsx")
     daily_planning_file.save(r'/mnt/c/Users/jasper.olthof/Thermo Fisher Scientific/USP Planning - Week Planning/Week Planning.xlsx')
 
