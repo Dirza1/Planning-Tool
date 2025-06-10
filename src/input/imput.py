@@ -10,43 +10,43 @@ def value_stream():
     try:
         value_stream_file = load_workbook(filename = "Value Stream 02Apr2025.xlsx", data_only=True)
     except FileNotFoundError as e:
-        easygui.showerror(
-            "Value stream not found",
+        easygui.msgbox(
             f"The valuestream file could not be found.\n"
             f"Ensure the file is named correctly and in the correct dictionary.\n"
             f"Restart the program\n"
-            f"official error: {e}"
+            f"official error: {e}",
+            title="Value stream not found"
         )
         sys.exit(1)
 
     try:
         daily_planning_file = load_workbook(filename="Daily planning.xlsx", data_only=True)
     except FileNotFoundError as e:
-        easygui.showerror(
-            "Daily planning not found",
+        easygui.msgbox(
             f"The daily planning file could not be found.\n"
             f"Ensure the file is named correctly and in the correct dictionary.\n"
             f"Restart the program\n"
-            f"official error: {e}"
+            f"official error: {e}",
+            title="Daily planning not found"
             )
         sys.exit(1)
     posible_programs:list[str] = value_stream_file.sheetnames
     try:
         selected_programs:list[str] = program_selection(posible_programs)
     except Exception as e:
-        easygui.showerror(
-            "Program selection not performed",
+        easygui.msgbox(
             f"The program selection was unsuccessful.\n"
             f"Restart the program\n"
-            f"official error: {e}"
+            f"official error: {e}",
+            title="Program selection not performed"
             )
         sys.exit(1)
 
     if len(selected_programs) == 0:
-        easygui.showerror(
-        "Program selection not performed",
+        easygui.msgbox(
         f"The program selection was unsuccessful.\n"
-        f"Restart the program\n"
+        f"Restart the program\n",
+        title="Program selection not performed"
         )
         sys.exit(1)
 
@@ -60,12 +60,12 @@ def value_stream():
             if isinstance(column_date, type(None)):
                 break
             if not isinstance(column_date, datetime):
-                easygui.showerror(
-                "Invalid Date Format",
+                easygui.msgbox(
                 f"The date {column_date} is not formatted correctly.\n"
                 f"This error happened during the parsing of {program}.\n"
                 "Ensure the correct formatting is used in Excel and that the thaw date is set in the format 01-01-2025 and not 01-Jan-2025.\n"
-                "Restart the program."
+                "Restart the program.",
+                title="Invalid Date Format"
                 )
                 sys.exit(1)
             column_week_number:int = column_date.isocalendar()[1]
@@ -88,11 +88,11 @@ def value_stream():
                 try:
                     week_planning = daily_planning_file[f"week {column_week_number} of {column_year}"]
                 except KeyError as e:
-                    easygui.showerror(
-                        "Invalid tab in weekly planning",
+                    easygui.msgbox(
                         f"The tab you are trying to use for the daily planning does not exist.\n"
                         f"Please ensure to extend the weekly planning to the end date of the process\n"
-                        "Restart the program."
+                        "Restart the program.",
+                        title="Invalid tab in weekly planning"
                     )                    
                     sys.exit(1)
 
