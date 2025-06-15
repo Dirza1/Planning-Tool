@@ -4,11 +4,13 @@ from datetime import datetime
 import easygui
 import sys
 from copy import copy
+from pathlib import Path
+
 
 def value_stream():
-   
     try:
-        value_stream_file = load_workbook(filename = "Value Stream MASTER.xlsx", data_only=True)
+        file_path_value = file_path = easygui.fileopenbox(title="Selecteer de Value Stream Excel")
+        value_stream_file = load_workbook(filename = str(file_path_value), data_only=True)
     except FileNotFoundError as e:
         easygui.msgbox(
             f"The valuestream file could not be found.\n"
@@ -20,7 +22,8 @@ def value_stream():
         sys.exit(1)
 
     try:
-        daily_planning_file = load_workbook(filename=r'/mnt/c/Users/jasper.olthof/Thermo Fisher Scientific/USP Planning - Week Planning/Week Planning.xlsx', data_only=True)
+        file_path_planning = file_path = easygui.fileopenbox(title="Selecteer de Daily Planning Excel")
+        daily_planning_file = load_workbook(filename=str(file_path_planning), data_only=True)
     except FileNotFoundError as e:
         easygui.msgbox(
             f"The daily planning file could not be found.\n"
@@ -30,6 +33,7 @@ def value_stream():
             title="Daily planning not found"
             )
         sys.exit(1)
+
 
     posible_programs:list[str] = value_stream_file.sheetnames
 
@@ -125,9 +129,9 @@ def value_stream():
 
 
 
-    reset_batch_number(program_sheet, batch_number)
-    value_stream_file.save("Value Stream 02Apr2025.xlsx")
-    daily_planning_file.save(r'/mnt/c/Users/jasper.olthof/Thermo Fisher Scientific/USP Planning - Week Planning/Week Planning.xlsx')
+        reset_batch_number(program_sheet, batch_number)
+    value_stream_file.save(str(file_path_value))
+    daily_planning_file.save(str(file_path_planning))
 
 
 def replace_batch_number(program_sheet, batch_number:int) -> None:
